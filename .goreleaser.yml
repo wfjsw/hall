@@ -1,4 +1,4 @@
-project_name: grumble
+project_name: hall
 dist: build/
 env:
   - GO111MODULE=on
@@ -8,8 +8,14 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
-    main: ./cmd/grumble/
-    binary: grumble
+    main: .
+    binary: hall
+    flags:
+      - -tags=lang_zh
+      - -v
+      - -trimpath
+    ldflags:
+     - -s -w -X main.BUILDDATE={{.Date}} -X main.VERSION={{.Version}}
     goos:
       - darwin
       - linux
@@ -18,15 +24,15 @@ builds:
       - amd64
       - arm
       - arm64
-    ignore:
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: arm64
-      - goos: windows
-        goarch: arm
-      - goos: windows
-        goarch: arm64
+    # ignore:
+    #   - goos: darwin
+    #     goarch: arm
+    #   - goos: darwin
+    #     goarch: arm64
+    #   - goos: windows
+    #     goarch: arm
+    #   - goos: windows
+    #     goarch: arm64
 archives:
   - files:
       - LICENSE
@@ -36,10 +42,13 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ .Tag }}-next"
+  disable: true
+  # name_template: "{{ .Tag }}-next"
 changelog:
   sort: asc
   filters:
     exclude:
     - '^docs:'
     - '^test:'
+release:
+  disable: true
